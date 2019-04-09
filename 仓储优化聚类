@@ -1,0 +1,412 @@
+import numpy as np
+import pandas as pd
+import  random
+import matplotlib.pyplot as plt
+
+
+# # 1. 获取临接矩阵
+CityDistance =  pd.read_excel('file1.xlsx')
+CityDistance = np.array(CityDistance)
+
+def Cross(p1,p2):
+    a = np.array(p1).copy()
+    b = np.array(p2).copy()
+    # 0~187之间随机生成两个整数,作为映射的起始点和结束点
+    begin = random.randint(0,187)
+    end = random.randint(0,187)
+    # 使 begin 小于 end
+    if begin > end:
+        temp = begin
+        begin = end
+        end = temp
+
+    #print begin,end
+    # 建立映射关系
+    cross_map = {}
+    is_exist = False
+    # 初步映射
+    for i in range(begin,end+1):
+        if a[i] not in cross_map.keys():
+            cross_map[a[i]] = []
+        if b[i] not in cross_map.keys():
+            cross_map[b[i]] = []
+
+        cross_map[a[i]].append(b[i])
+        cross_map[b[i]].append(a[i])
+     appear_times = {}
+    for i in range(begin,end+1):
+        if a[i] not in appear_times.keys():
+            appear_times[a[i]] = 0
+        if b[i] not in appear_times.keys():
+            appear_times[b[i]] = 0
+
+        appear_times[a[i]] += 1
+        appear_times[b[i]] += 1
+
+        if a[i] == b[i]:
+            appear_times[a[i]] -= 1
+
+
+    for k,v in appear_times.items():
+        if v == 2:
+            values = cross_map[k]
+            for key in values:
+                cross_map[key].extend(values)
+                cross_map[key].append(k)
+                cross_map[key].remove(key)
+                cross_map[key] = list(set(cross_map[key]))
+
+
+    # 使用映射关系交叉
+    # 先映射选中的子串
+    temp = a[begin:end+1].copy()
+    a[begin:end+1] = b[begin:end+1]
+    b[begin:end+1] = temp
+
+    # 根据映射规则映射剩下的子串
+    seg_a = a[begin:end+1]
+    seg_b = b[begin:end+1]
+
+    remain = list(range(begin))
+    remain.extend(range(end+1,len(a)))
+
+    for i in remain:
+        keys = cross_map.keys()
+        if a[i] in keys:
+            for fi in cross_map[a[i]]:
+                if fi not in seg_a:
+                    a[i] = fi
+                    break
+
+        if b[i] in keys:
+            for fi in cross_map[b[i]]:
+                if fi not in seg_b:
+                    b[i] = fi
+                    break
+
+    return a,b            
+ # ## 2.2 变异
+
+# In[4]:
+
+
+def Variation(s):
+    c = range(188)
+    index1,index2 = random.sample(c,2)
+    temp = s[index1]
+    s[index1] = s[index2]
+    s[index2] = temp
+    return s
+
+
+# ## 2.3 计算适应度
+
+# In[5]:
+
+
+def cost(s):
+    dis = CityDistance
+    cost1 = 0
+    cost2 = 0
+    cost3 = 0
+    cost4 = 0 
+    cost5 = 0
+    cost6 = 0
+    cost7 = 0
+    cost8 = 0
+    cost9 = 0
+    cost10 = 0
+    cost11 = 0
+    cost12 = 0
+    cost13 = 0
+    cost14 = 0
+    cost15 = 0
+    cost16 = 0
+    cost17 = 0
+    cost18 = 0
+    cost19 = 0
+    cost20 = 0
+    cost21 = 0
+    cost22 = 0
+    cost23 = 0
+    cost24 = 0
+    cost25 = 0
+    cost26 = 0
+    cost27 = 0
+    cost28 = 0 
+    for i in range(0,24):   
+        for j in range(24,48):
+            cost1 += dis[s[i],s[j]]
+    for i in range(0,24):   
+        for j in range(48,72):
+            cost2 += dis[s[i],s[j]] 
+    for i in range(0,24):   
+        for j in range(72,96):
+            cost3 += dis[s[i],s[j]]
+    for i in range(0,24):   
+        for j in range(96,119):
+            cost4 += dis[s[i],s[j]]
+    for i in range(0,24):   
+        for j in range(119,142):
+            cost5 += dis[s[i],s[j]]
+    for i in range(0,24):   
+        for j in range(142,165):
+            cost6 += dis[s[i],s[j]]
+    for i in range(0,24):   
+        for j in range(165,188):
+            cost7 += dis[s[i],s[j]]
+
+    for i in range(24,48):   
+        for j in range(48,72):
+            cost8 += dis[s[i],s[j]]
+    for i in range(24,48):   
+        for j in range(72,96):
+            cost9 += dis[s[i],s[j]]
+    for i in range(24,48):   
+        for j in range(96,119):
+            cost10 += dis[s[i],s[j]]
+    for i in range(24,48):   
+        for j in range(119,142):
+            cost11 += dis[s[i],s[j]]
+    for i in range(24,48):   
+        for j in range(142,165):
+            cost12 += dis[s[i],s[j]]
+    for i in range(24,48):   
+        for j in range(165,188):
+            cost13 += dis[s[i],s[j]]
+            
+    for i in range(48,72):      
+        for j in range(72,96):
+            cost14 += dis[s[i],s[j]]
+    for i in range(48,72):   
+        for j in range(96,119):
+            cost15 += dis[s[i],s[j]]
+    for i in range(48,72):   
+        for j in range(119,142):
+            cost16 += dis[s[i],s[j]]
+    for i in range(48,72):   
+        for j in range(142,165):
+            cost17 += dis[s[i],s[j]]
+    for i in range(48,72):   
+        for j in range(165,188):
+            cost18 += dis[s[i],s[j]]
+            
+    for i in range(72,96):         
+        for j in range(96,119):
+            cost19 += dis[s[i],s[j]]
+    for i in range(72,96):   
+        for j in range(119,142):
+            cost20 += dis[s[i],s[j]]
+    for i in range(72,96):   
+        for j in range(142,165):
+            cost21 += dis[s[i],s[j]]
+    for i in range(72,96):   
+        for j in range(165,188):
+            cost22 += dis[s[i],s[j]]
+            
+    for i in range(96,119):            
+        for j in range(119,142):
+            cost23 += dis[s[i],s[j]]
+    for i in range(96,119):   
+        for j in range(142,165):
+            cost24 += dis[s[i],s[j]]
+    for i in range(96,119):   
+        for j in range(165,188):
+            cost25 += dis[s[i],s[j]]
+            
+    for i in range(119,142):            
+        for j in range(142,165):
+            cost26 += dis[s[i],s[j]]
+    for i in range(119,142):   
+        for j in range(165,188):
+            cost27 += dis[s[i],s[j]]
+    for i in range(142,165):              
+        for j in range(165,188):
+            cost28 += dis[s[i],s[j]]
+    cost = cost1+cost2+cost3+cost4+cost5+cost6+cost7+cost8+cost9+cost10+cost11+cost12+cost13
+    +cost14+cost15+cost16+cost17+cost18+cost19+cost20+cost21+cost22+cost23+cost24+cost25+cost26+cost27+cost28
+    return cost
+
+
+
+# ## 2.4 构建遗传算法
+
+# In[6]:
+
+
+# 获取列表的第三个元素
+def TakeThird(elem):
+    """
+    按适应度从大到小，排序时作为sort的key参数
+    """
+    return elem[2]
+
+def CacAdap(population):
+    """
+    # adap n*4,n为行数，每行包括：个体下标,适应度,选择概率,累积概率
+    """
+    # 计算每一个个体的适应度,选择概率
+    adap = []
+    psum = 0
+    # 计算适应度
+    i = 0
+    for p in population:
+        icost = np.exp(cost(p))
+        psum += icost
+        # 添加个体下标
+        adap.append([i])
+        # 添加适应度
+        adap[i].append(icost)
+        i += 1
+    # 计算选择概率
+    for p in adap:
+        # 添加选择概率和累积概率，这里累积概率暂时等于选择概率，后面会重新计算赋值
+        p.append(p[1]/psum)
+        p.append(p[2])
+
+    # 根据适应度从大到小排序
+    adap.sort(key=TakeThird,reverse=True)
+    #print adap
+    # 计算累计概率
+    n = len(adap)
+    for i in range(1,n):
+        p = adap[i][3] + adap[i-1][3]
+        adap[i][3] = p
+    
+    return adap
+
+def Chose(adap):
+    """
+    轮盘选择操作
+    """
+    chose = []
+    # 选择次数
+    epochs = 20 #max(len(adap)/2,20)
+    #while(len(set(chose)) <2):
+    #print 'chosing...length %d'%len(set(chose))
+    n = len(adap)
+    for a in range(epochs):
+        p = random.random()
+        if adap[0][3] >= p:
+            chose.append(adap[0][0])
+        else:
+            for i in range(1,n):
+                if adap[i][3] >= p and adap[i-1][3] < p:
+                    chose.append(adap[i][0])
+                    break
+
+    chose = list((chose))
+    return chose
+
+def Cross_Variation(chose,population):
+    """
+    交叉变异操作
+    """
+    # 交叉率
+    p_c = 0.7
+    # 变异率
+    p_m = 0.3
+    # 交叉变异操作
+    chose_num = len(chose)
+    sample_times = int(chose_num/2)
+    for i in range(sample_times):
+        index1,index2 = random.sample(chose,2)
+        #print index1,index2
+        # 参与交叉的父结点
+        parent1 = population[index1]
+        parent2 = population[index2]
+        # 这两个父结点已经交叉，后面就不要参与了，就像这两个人以及结婚，按规矩不能在与其他人结婚了，故从采样样本中移除
+        chose.remove(index1)
+        chose.remove(index2)
+        
+        p = random.random()
+        if p_c >= p:
+            child1,child2 = Cross(parent1,parent2)
+            #print child1,child2
+            p1 = random.random()
+            p2 = random.random()
+            if p_m > p1:
+                child1 = Variation(child1)
+            if p_m > p2:
+                child2 = Variation(child2)
+            population.append(list(child1))
+            population.append(list(child2))
+    return population
+
+
+# In[7]:
+
+
+def GA(population):
+    """
+    一次遗传过程
+    """
+    
+    adap = CacAdap(population)
+
+    # 选择操作
+    chose = Chose(adap)
+    # 交叉变异
+    population = Cross_Variation(chose,population)
+        
+
+    return population
+
+
+# ## 2.5 循环调用遗传算法，直到达到终止条件
+
+# In[8]:
+
+
+def find_min(population):
+    loss = []
+    # 遗传次数
+    epochs = 51
+    i = 0
+    while i < epochs:
+        adap = []
+        # 计算适应度
+        for p in population:
+            icost = cost(p)
+            adap.append(icost)
+        
+        # 使用遗传算法更新种群
+        population = GA(population)
+        
+        min_cost = max(adap)
+        if i%10 == 0:
+            print ('epoch %d: loss=%.2f'%(i,-min_cost))
+        loss.append([i,-min_cost])
+        i += 1
+        if i == epochs:
+            # 输出最优解
+            p_len = len(population)
+            for index in range(p_len):
+                if adap[index] == min_cost:
+                    print ('最优路径:')
+                    print (population[index])
+                    print ('代价大小:')
+                    print (-min_cost)
+                    break
+    # 打印损失函数变换
+    loss = np.array(loss)
+    plt.plot(loss[:,0],loss[:,1])
+    plt.title('GA')
+    plt.show()
+    
+
+
+# In[9]:
+
+
+# 初始化
+x = []
+for i in range(188):
+    x.append(i)
+s1 = random.sample(x,188)
+s2 = random.sample(x,188)
+s3 = random.sample(x,188)
+s4 = random.sample(x,188)
+population = [s1,s2,s3,s4]
+# 调用
+find_min(population)
